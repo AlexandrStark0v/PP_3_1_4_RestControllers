@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Создать нового пользователя</title>
+</head>
+<body>
+<h1>Создать нового пользователя</h1>
+<form th:action="@{/admin}" th:object="${user}" method="post">
+  <div>
+    <label for="name">Имя:</label>
+    <input type="text" id="name" th:field="*{name}" required>
+  </div>
+  <div>
+    <label for="username">Имя пользователя:</label>
+    <input type="text" id="username" th:field="*{username}" required>
+  </div>
+  <div>
+    <label for="email">Email:</label>
+    <input type="email" id="email" th:field="*{email}" required>
+  </div>
+  <div>
+    <label for="password">Пароль:</label>
+    <input type="password" id="password" th:field="*{password}" required>
+  </div>
+  <div>
+    <label for="roles">Роли:</label>
+    <select id="roles" th:field="*{roles}" multiple>
+      <option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.name}">Роль</option>
+    </select>
+  </div>
+  <button type="submit">Сохранить</button>
+</form>
+</body>
+</html>

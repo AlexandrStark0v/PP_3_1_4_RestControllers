@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/html">
+<head>
+    <title>Кабинет пользователя</title>
+</head>
+<body>
+<h2>Добро пожаловать, <span th:text="${user.name}">[Имя]</span>!</h2>
+<p><strong>Имя пользователя:</strong> <span th:text="${user.username}"/></p>
+<p><strong>Email:</strong> <span th:text="${user.email}"/></p>
+<p><strong>Роли:</strong>
+<ul>
+    <li th:each="role : ${user.roles}" th:text="${role.name}">Роль</li>
+</ul>
+</p>
+
+<form th:action="@{/logout}" method="post">
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+    <button type="submit">Выйти</button>
+</form>
+
+</body>
+</html>
