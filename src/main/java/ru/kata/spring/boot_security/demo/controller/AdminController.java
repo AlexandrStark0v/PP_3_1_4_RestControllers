@@ -24,7 +24,7 @@ public class AdminController {
     @GetMapping
     public String listUsers(Model model, Principal principal) {
         model.addAttribute("admin", userService.findByUsername(principal.getName()));
-        model.addAttribute("user", userService.getAllUsers());
+        model.addAttribute("users", userService.getAllUsers());
         return "admin/index";
     }
 
