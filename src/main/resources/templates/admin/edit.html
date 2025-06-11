@@ -21,7 +21,7 @@
   <div>
     <label for="roles">Роли:</label>
     <select id="roles" th:field="*{roles}" multiple>
-      <option th:each="role : ${roles}" th:value="${role}" th:text="${role.name}">Роль</option>
+      <option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.name}">Роль</option>
     </select>
   </div>
   <button type="submit">Обновить</button>

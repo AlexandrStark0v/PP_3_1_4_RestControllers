@@ -30,7 +30,7 @@ public class User implements UserDetails {
         return roles;
     }
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -38,16 +38,6 @@ public class User implements UserDetails {
     )
     private Set<Role> roles = new HashSet<>();
 
-
-//    @Column(name = "name")
-//    @NotBlank(message = "Имя не может быть пустым")
-//    @Pattern(regexp = "^[a-zA-Z]+$", message = "Имя должно содержать латинские буквы")
-//    private String name;
-
-//    @Column(name = "email")
-//    @Email(message = "Email должен быть корректным")
-//    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", message = "Email должен быть только на латинице")
-//    private String email;
 
     public User() {
     }

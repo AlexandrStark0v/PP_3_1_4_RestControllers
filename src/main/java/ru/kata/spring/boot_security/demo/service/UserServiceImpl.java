@@ -25,7 +25,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public List<User> getAllUsers() {
-        return userRepository.findAll();
+        return userRepository.findAllWithRoles();
     }
 
     @Override
@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public User findByUsername(String username) {
-        return userRepository.findByUsername(username).orElse(null);
+        return userRepository.findByUsernameWithRoles(username).orElse(null);
     }
 
     @Override
@@ -58,4 +58,5 @@ public class UserServiceImpl implements UserService {
     public void updateUser(User user) {
         userRepository.save(user);
     }
+
 }
