@@ -25,6 +25,12 @@ public class User implements UserDetails {
 
     private String email;
 
+    private String firstName;
+
+    private String lastName;
+
+    private int age;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles;
@@ -49,6 +55,18 @@ public class User implements UserDetails {
         this.email = email;
         this.roles = roles;
     }
+
+    public String getFirstName(){return firstName;}
+
+    public String getLastName(){return lastName;}
+
+    public void setFirstName(String firstName){this.firstName = firstName;}
+
+    public void setLastName(String lastName){this.lastName = lastName;}
+
+    public int getAge(){return age;}
+
+    public void setAge(int age){this.age = age;}
 
     public Long getId() {
         return id;

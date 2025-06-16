@@ -38,8 +38,7 @@ public class AdminController {
         return "admin";
     }
 
-    // Создание нового пользователя
-    // Создание нового пользователя
+
     @PostMapping
     public String createUser(@ModelAttribute("newUser") User user,
                              @RequestParam("roles") List<Long> roleIds) {
@@ -49,7 +48,6 @@ public class AdminController {
             throw new IllegalArgumentException("Пароль обязателен при создании пользователя");
         }
 
-        // Получаем роли из базы по id
         Set<Role> roles = roleService.getRolesByIds(roleIds);
         user.setRoles(roles);
 

@@ -13,6 +13,7 @@
                 admin@mail.ru with roles: ADMIN USER
             </span>
             <form class="d-flex" th:action="@{/logout}" method="post">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                 <button class="btn btn-outline-light" type="submit">Logout</button>
             </form>
         </div>
@@ -37,8 +38,9 @@
                 <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Name</th>
-                    <th>Username</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Age</th>
                     <th>Email</th>
                     <th>Roles</th>
                     <th>Edit</th>
@@ -48,27 +50,38 @@
                 <tbody>
                 <tr th:each="user : ${users}">
                     <td th:text="${user.id}"></td>
-                    <td th:text="${user.name}"></td>
-                    <td th:text="${user.username}"></td>
+                    <td th:text="${user.firstName}"></td>
+                    <td th:text="${user.lastName}"></td>
+                    <td th:text="${user.age}"></td>
                     <td th:text="${user.email}"></td>
-                    <td th:text="${user.roles}"></td>
+                    <td>
+                        <span th:each="role : ${user.roles}" th:text="${role.name} + ' '"></span>
+                    </td>
                     <td>
                         <button class="btn btn-info btn-sm"
                                 data-bs-toggle="modal"
                                 data-bs-target="#editUserModal"
                                 th:attr="data-id=${user.id},
-                                         data-name=${user.name},
-                                         data-username=${user.username},
+                                         data-firstname=${user.firstName},
+                                         data-lastname=${user.lastName},
+                                         data-age=${user.age},
                                          data-email=${user.email},
                                          data-roles=${user.roles}">
                             Edit
                         </button>
                     </td>
                     <td>
-                        <form th:action="@{/admin/{id}(id=${user.id})}" method="post">
-                            <input type="hidden" name="_method" value="delete">
-                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                        </form>
+                        <button class="btn btn-danger btn-sm"
+                                data-bs-toggle="modal"
+                                data-bs-target="#deleteUserModal"
+                                th:attr="data-id=${user.id},
+                                         data-firstname=${user.firstName},
+                                         data-lastname=${user.lastName},
+                                         data-age=${user.age},
+                                         data-email=${user.email},
+                                         data-roles=${user.roles}">
+                            Delete
+                        </button>
                     </td>
                 </tr>
                 </tbody>
@@ -80,12 +93,16 @@
             <form th:action="@{/admin}" method="post">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                 <div class="mb-3">
-                    <label class="form-label">Name</label>
-                    <input type="text" class="form-control" name="name" required>
+                    <label class="form-label">First Name</label>
+                    <input type="text" class="form-control" name="firstName" required>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">Username</label>
-                    <input type="text" class="form-control" name="username" required>
+                    <label class="form-label">Last Name</label>
+                    <input type="text" class="form-control" name="lastName" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Age</label>
+                    <input type="number" class="form-control" name="age" min="0" required>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Email</label>
@@ -97,7 +114,7 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Roles</label>
-                    <select class="form-select" name="roles" required>
+                    <select class="form-select" name="roles" multiple required>
                         <option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.name}"></option>
                     </select>
                 </div>
@@ -111,7 +128,7 @@
 <div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form method="post">
+            <form id="editForm" method="post">
                 <input type="hidden" name="_method" value="put">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                 <div class="modal-header">
@@ -119,18 +136,26 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <input type="hidden" name="id">
+                    <input type="hidden" name="id" id="editUserId">
                     <div class="mb-3">
-                        <label class="form-label">Name</label>
-                        <input type="text" class="form-control" name="name" required>
+                        <label class="form-label">ID</label>
+                        <input type="text" class="form-control" id="editId" readonly>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Username</label>
-                        <input type="text" class="form-control" name="username" required>
+                        <label class="form-label">First Name</label>
+                        <input type="text" class="form-control" id="editFirstName" name="firstName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Last Name</label>
+                        <input type="text" class="form-control" id="editLastName" name="lastName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Age</label>
+                        <input type="number" class="form-control" id="editAge" name="age" min="0" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Email</label>
-                        <input type="email" class="form-control" name="email" required>
+                        <input type="email" class="form-control" id="editEmail" name="email" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Password</label>
@@ -138,7 +163,7 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Roles</label>
-                        <select class="form-select" name="roles" required>
+                        <select class="form-select" name="roles" multiple required>
                             <option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.name}"></option>
                         </select>
                     </div>
@@ -152,23 +177,94 @@
     </div>
 </div>
 
+
+<!-- Delete User Modal -->
+<div class="modal fade" id="deleteUserModal" tabindex="-1" aria-labelledby="deleteUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="deleteForm" method="post">
+                <input type="hidden" name="_method" value="delete">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteUserModalLabel">Delete User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">ID</label>
+                        <input type="text" class="form-control" id="deleteId" name="id" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">First Name</label>
+                        <input type="text" class="form-control" id="deleteFirstName" name="firstName" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Last Name</label>
+                        <input type="text" class="form-control" id="deleteLastName" name="lastName" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Age</label>
+                        <input type="text" class="form-control" id="deleteAge" name="age" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" id="deleteEmail" name="email" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Role</label>
+                        <input type="text" class="form-control" name="roles" readonly>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     var editUserModal = document.getElementById('editUserModal');
     editUserModal.addEventListener('show.bs.modal', function (event) {
         var button = event.relatedTarget;
         var id = button.getAttribute('data-id');
-        var name = button.getAttribute('data-name');
-        var username = button.getAttribute('data-username');
+        var firstName = button.getAttribute('data-firstname');
+        var lastName = button.getAttribute('data-lastname');
+        var age = button.getAttribute('data-age');
         var email = button.getAttribute('data-email');
 
-        var form = editUserModal.querySelector('form');
+        var form = editUserModal.querySelector('#editForm');
         form.action = '/admin/' + id;
 
-        form.querySelector('input[name="id"]').value = id;
-        form.querySelector('input[name="name"]').value = name;
-        form.querySelector('input[name="username"]').value = username;
-        form.querySelector('input[name="email"]').value = email;
+        editUserModal.querySelector('#editUserId').value = id;
+        editUserModal.querySelector('#editId').value = id;
+        editUserModal.querySelector('#editFirstName').value = firstName;
+        editUserModal.querySelector('#editLastName').value = lastName;
+        editUserModal.querySelector('#editAge').value = age;
+        editUserModal.querySelector('#editEmail').value = email;
+    });
+
+    var deleteUserModal = document.getElementById('deleteUserModal');
+    deleteUserModal.addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget;
+        var id = button.getAttribute('data-id');
+        var firstName = button.getAttribute('data-firstname');
+        var lastName = button.getAttribute('data-lastname');
+        var age = button.getAttribute('data-age');
+        var email = button.getAttribute('data-email');
+        var roles = button.getAttribute('data-roles');
+
+        var form = document.getElementById('deleteForm');
+        form.action = '/admin/' + id;
+
+        deleteUserModal.querySelector('input[name="id"]').value = id;
+        deleteUserModal.querySelector('input[name="firstName"]').value = firstName;
+        deleteUserModal.querySelector('input[name="lastName"]').value = lastName;
+        deleteUserModal.querySelector('input[name="age"]').value = age;
+        deleteUserModal.querySelector('input[name="email"]').value = email;
+        deleteUserModal.querySelector('input[name="roles"]').value = roles;
     });
 </script>
 </body>
