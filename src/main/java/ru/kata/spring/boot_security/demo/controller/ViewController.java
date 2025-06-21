@@ -10,4 +10,9 @@ public class ViewController {
     public String adminPage() {
         return "admin"; // имя файла admin-panel.html в templates
     }
+
+    @GetMapping("/user")
+    public String userPage() {
+        return "user"; // user.html в папке templates
+    }
 }

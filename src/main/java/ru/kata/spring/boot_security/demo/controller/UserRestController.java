@@ -20,12 +20,12 @@ public class UserRestController {
         this.userService = userService;
     }
 
-    @GetMapping
+    @GetMapping()
     public ResponseEntity<User> getCurrentUser(Principal principal) {
         if (principal == null) {
             return ResponseEntity.status(401).build();
         }
-        User user = userService.findByUsername(principal.getName());
+        User user = userService.findByEmail(principal.getName());
         if (user == null) {
             return ResponseEntity.notFound().build();
         }
