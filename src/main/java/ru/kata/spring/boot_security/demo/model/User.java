@@ -1,6 +1,7 @@
 package ru.kata.spring.boot_security.demo.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,6 +13,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "users")
+
 public class User implements UserDetails {
 
     @Id
@@ -53,7 +55,7 @@ public class User implements UserDetails {
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public String getUsername() { return username; }
+    public String getUsername() { return email; }
     public void setUsername(String username) { this.username = username; }
 
     public String getPassword() { return password; }

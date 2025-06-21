@@ -22,10 +22,12 @@ public class UserRestController {
 
     @GetMapping()
     public ResponseEntity<User> getCurrentUser(Principal principal) {
+        System.out.println("Principal: " + principal);
         if (principal == null) {
             return ResponseEntity.status(401).build();
         }
         User user = userService.findByEmail(principal.getName());
+        System.out.println("Principal.getName() = " + principal.getName());
         if (user == null) {
             return ResponseEntity.notFound().build();
         }
